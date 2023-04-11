@@ -485,13 +485,13 @@ pub struct Head {
     pub(crate) pid: u16,
 
     /// Pack length
-    pub(crate) length: u16,
+    pub length: u16,
 
     /// Server address(Tcp) or Slave address(Rtu)
     pub(crate) uid: u8,
 
     /// Modbus Function
-    pub(crate) function: Function,
+    pub function: Function,
 
     /// Frame version
     pub(crate) version: Version,
