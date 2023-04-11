@@ -155,14 +155,13 @@
 //! ```
 extern crate core;
 
+pub use frame::request::*;
+pub use frame::response::*;
+pub use frame::Exception;
 pub use frame::Frame;
 pub use frame::Function;
-pub use frame::Exception;
-pub use frame::request::*;
-pub use frame::response::Response;
 
 pub mod codec;
 pub mod util;
 
 mod frame;
-

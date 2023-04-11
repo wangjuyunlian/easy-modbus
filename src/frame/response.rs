@@ -3,8 +3,8 @@ use std::fmt::Formatter;
 
 use bytes::{BufMut, BytesMut};
 
-use crate::frame::{Exception, Version};
 use crate::frame::Version::Rtu;
+use crate::frame::{Exception, Version};
 use crate::util::crc;
 
 use super::{Head, Length};
@@ -20,6 +20,42 @@ pub enum Response {
     WriteMultipleCoils(Head, WriteMultipleCoilsResponse),
     WriteMultipleHoldingRegisters(Head, WriteMultipleHoldingRegistersResponse),
     Exception(Head, ExceptionResponse),
+}
+
+impl Response {
+    pub fn set_head(&mut self, mut new_head: Head) {
+        unsafe {
+            match self {
+                Response::ReadCoils(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Response::ReadDiscreteInputs(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Response::ReadMultipleHoldingRegisters(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Response::ReadInputRegisters(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Response::WriteSingleCoil(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Response::WriteSingleHoldingRegister(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Response::WriteMultipleCoils(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Response::WriteMultipleHoldingRegisters(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Response::Exception(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+            }
+        }
+    }
 }
 
 impl fmt::Display for Response {
@@ -497,8 +533,8 @@ pub(crate) fn response_to_bytesmut(item: Response, dst: &mut BytesMut) {
 
 #[cfg(test)]
 mod response_test {
-    use crate::frame::{Exception, Length};
     use crate::frame::response::*;
+    use crate::frame::{Exception, Length};
 
     #[test]
     fn test_read_coils_response() {
@@ -514,8 +550,12 @@ mod response_test {
 
     #[test]
     fn test_read_discrete_inputs_response() {
-        let response_l =
-            ReadDiscreteInputsResponse::new(vec![0b1010_1100, 0b1101_1011, 0b1111_1011, 0b0000_1101]);
+        let response_l = ReadDiscreteInputsResponse::new(vec![
+            0b1010_1100,
+            0b1101_1011,
+            0b1111_1011,
+            0b0000_1101,
+        ]);
         let response_r = ReadDiscreteInputsResponse {
             bytes_number: 0x04,
             values: vec![0b1010_1100, 0b1101_1011, 0b1111_1011, 0b0000_1101],
@@ -523,7 +563,6 @@ mod response_test {
         assert_eq!(response_l, response_r);
         assert_eq!(response_l.len(), 5);
     }
-
 
     #[test]
     fn test_read_multiple_holding_registers_response() {

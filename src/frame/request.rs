@@ -21,6 +21,52 @@ pub enum Request {
     WriteMultipleHoldingRegisters(Head, WriteMultipleHoldingRegistersRequest),
 }
 
+impl Request {
+    pub fn head(&self) -> Head {
+        match self {
+            Request::ReadCoils(head, _) => head.clone(),
+            Request::ReadDiscreteInputs(head, _) => head.clone(),
+            Request::ReadMultipleHoldingRegisters(head, _) => head.clone(),
+            Request::ReadInputRegisters(head, _) => head.clone(),
+            Request::WriteSingleCoil(head, _) => head.clone(),
+            Request::WriteSingleHoldingRegister(head, _) => head.clone(),
+            Request::WriteMultipleCoils(head, _) => head.clone(),
+            Request::WriteMultipleHoldingRegisters(head, _) => head.clone(),
+        }
+    }
+
+    pub fn set_head(&mut self, mut new_head: Head) {
+        unsafe {
+            match self {
+                Request::ReadCoils(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Request::ReadDiscreteInputs(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Request::ReadMultipleHoldingRegisters(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Request::ReadInputRegisters(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Request::WriteSingleCoil(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Request::WriteSingleHoldingRegister(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Request::WriteMultipleCoils(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+                Request::WriteMultipleHoldingRegisters(head, _) => {
+                    std::ptr::swap(head as *mut Head, &mut new_head as *mut Head)
+                }
+            }
+        }
+    }
+}
+
 impl fmt::Display for Request {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut buf = BytesMut::with_capacity(64);
@@ -62,6 +108,10 @@ impl ReadCoilsRequest {
             first_address,
             coils_number,
         }
+    }
+
+    pub fn get_first_address(&self) -> &u16 {
+        &self.first_address
     }
 }
 
@@ -478,8 +528,8 @@ pub(crate) fn request_to_bytesmut(item: Request, dst: &mut BytesMut) {
 
 #[cfg(test)]
 mod request_test {
-    use crate::frame::Length;
     use crate::frame::request::*;
+    use crate::frame::Length;
 
     #[test]
     fn test_read_coils_request() {

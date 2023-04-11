@@ -432,7 +432,6 @@ impl Frame {
         Response::Exception(head, response_body)
     }
 
-
     /// Build modbus message head
     fn head(&self, uid: u8, function: Function, body_length: u16, is_exception: bool) -> Head {
         Head::new(
@@ -624,6 +623,10 @@ impl Head {
 
     pub fn body_length(&mut self, body_length: u16) {
         self.length = body_length + 2;
+    }
+
+    pub fn uid(&self) -> u8 {
+        self.uid
     }
 }
 
